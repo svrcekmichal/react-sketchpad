@@ -1,52 +1,61 @@
 import { v4 } from 'uuid';
 
+export const TOOL_LINE = 'line';
+
 export default (context) => {
-  let currentLine = null;
+  let line = null;
   let imageData = null;
 
   const onMouseDown = (x, y, color, size) => {
-    currentLine = {
+    line = {
       id: v4(),
-      tool: 'LINE',
+      tool: TOOL_LINE,
       color,
       size,
       start: { x, y },
       end: null
     };
     imageData = context.getImageData(0, 0, context.canvas.clientWidth, context.canvas.clientHeight);
-    return [currentLine];
+    return [line];
   };
 
-  const onMouseMove = (x, y) => {
-    if (!currentLine) return;
-    context.putImageData(imageData, 0, 0);
+  const drawLine = (item, x, y) => {
     context.save();
     context.lineJoin = 'round';
     context.lineCap = 'round';
     context.beginPath();
-    context.lineWidth = currentLine.size;
-    context.strokeStyle = currentLine.color;
+    context.lineWidth = item.size;
+    context.strokeStyle = item.color;
     context.globalCompositeOperation = 'source-over';
-    context.moveTo(currentLine.start.x, currentLine.start.y);
+    context.moveTo(item.start.x, item.start.y);
     context.lineTo(x, y);
     context.closePath();
     context.stroke();
     context.restore();
   };
 
-  const onMouseUp = (x, y) => {
-    if (!currentLine) return;
-    onMouseMove(x, y);
-    const line = currentLine;
-    imageData = null;
-    currentLine = null;
-    line.end = { x, y };
-    return [line];
+  const onMouseMove = (x, y) => {
+    if (!line) return;
+    context.putImageData(imageData, 0, 0);
+    drawLine(line, x, y);
   };
+
+  const onMouseUp = (x, y) => {
+    if (!line) return;
+    onMouseMove(x, y);
+    const item = line;
+    imageData = null;
+    line = null;
+    item.end = { x, y };
+    return [item];
+  };
+
+  const draw = item => drawLine(item, item.end.x, item.end.y);
 
   return {
     onMouseDown,
     onMouseMove,
     onMouseUp,
+    draw,
   };
 };

@@ -8,10 +8,10 @@ new WebpackDevServer(webpack(config), {
   historyApiFallback: true,
   colors:true,
   contentBase: __dirname
-}).listen(12345, 'localhost', function (err, result) {
+}).listen(12345, '172.16.70.58', function (err, result) {
   if (err) {
     return console.log(err);
   }
 
-  console.log('Listening at http://localhost:12345/');
+  console.log('Listening at http://172.16.70.58:12345/');
 });

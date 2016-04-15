@@ -1,5 +1,7 @@
 import { v4 } from 'uuid';
 
+export const TOOL_RECTANGLE = 'rectangle';
+
 export default (context) => {
   let rectangle = null;
   let imageData = null;
@@ -7,7 +9,7 @@ export default (context) => {
   const onMouseDown = (x, y, color, size, fill) => {
     rectangle = {
       id: v4(),
-      tool: 'RECTANGLE',
+      tool: TOOL_RECTANGLE,
       color,
       size,
       fill,
@@ -18,26 +20,26 @@ export default (context) => {
     return [rectangle];
   };
 
-  const drawRectangle = (mouseX, mouseY) => {
-    const startX = mouseX < rectangle.start.x ? mouseX : rectangle.start.x;
-    const startY = mouseY < rectangle.start.y ? mouseY : rectangle.start.y;
-    const widthX = Math.abs(rectangle.start.x - mouseX);
-    const widthY = Math.abs(rectangle.start.y - mouseY);
+  const drawRectangle = (item, mouseX, mouseY) => {
+    const startX = mouseX < item.start.x ? mouseX : item.start.x;
+    const startY = mouseY < item.start.y ? mouseY : item.start.y;
+    const widthX = Math.abs(item.start.x - mouseX);
+    const widthY = Math.abs(item.start.y - mouseY);
 
     context.beginPath();
-    context.lineWidth = rectangle.size;
-    context.strokeStyle = rectangle.color;
-    context.fillStyle = rectangle.fill;
+    context.lineWidth = item.size;
+    context.strokeStyle = item.color;
+    context.fillStyle = item.fill;
     context.rect(startX, startY, widthX, widthY);
     context.stroke();
-    if (rectangle.fill) context.fill();
+    if (item.fill) context.fill();
   };
 
   const onMouseMove = (x, y) => {
     if (!rectangle) return;
     context.putImageData(imageData, 0, 0);
     context.save();
-    drawRectangle(x, y);
+    drawRectangle(rectangle, x, y);
     context.restore();
   };
 
@@ -51,9 +53,12 @@ export default (context) => {
     return [item];
   };
 
+  const draw = item => drawRectangle(item, item.end.x, item.end.y);
+
   return {
     onMouseDown,
     onMouseMove,
     onMouseUp,
+    draw,
   };
 };

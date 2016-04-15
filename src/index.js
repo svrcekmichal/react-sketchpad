@@ -1,7 +1,16 @@
-export { default as SketchPad } from './SketchPad';
+export {
+  default as SketchPad,
+  toolsMap
+} from './SketchPad';
 
 // TOOLS
-export { default as Ellipse } from './tools/Ellipse';
-export { default as Line } from './tools/Line';
-export { default as Pencil } from './tools/Pencil';
-export { default as Rectangle } from './tools/Rectangle';
+export {
+  Pencil,
+  TOOL_PENCIL,
+  Line,
+  TOOL_LINE,
+  Ellipse,
+  TOOL_ELLIPSE,
+  Rectangle,
+  TOOL_RECTANGLE
+} from './tools';

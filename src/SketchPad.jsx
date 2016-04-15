@@ -1,24 +1,30 @@
 import React, {Component, PropTypes} from 'react';
 import { findDOMNode } from 'react-dom'
+import { Pencil, TOOL_PENCIL, Line, TOOL_LINE, Ellipse, TOOL_ELLIPSE, Rectangle, TOOL_RECTANGLE } from './tools'
+
+export const toolsMap = {
+  [TOOL_PENCIL]: Pencil,
+  [TOOL_LINE]: Line,
+  [TOOL_RECTANGLE]: Rectangle,
+  [TOOL_ELLIPSE]: Ellipse
+};
 
 export default class SketchPad extends Component {
 
   tool = null;
   interval = null;
-  points = [];
 
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
-    items: PropTypes.object.isRequired,
-    animate: PropTypes.number.isRequired,
+    items: PropTypes.array.isRequired,
+    animate: PropTypes.bool,
     canvasClassName: PropTypes.string,
-
     color: PropTypes.string,
     fillColor: PropTypes.string,
     size: PropTypes.number,
-
-    tool: PropTypes.func.isRequired,
+    tool: PropTypes.string,
+    toolsMap: PropTypes.object,
     onItemStart: PropTypes.func, // function(stroke:Stroke) { ... }
     onEveryItemChange: PropTypes.func, // function(idStroke:string, x:number, y:number) { ... }
     onDebouncedItemChange: PropTypes.func, // function(idStroke, points:Point[]) { ... }
@@ -31,9 +37,12 @@ export default class SketchPad extends Component {
     height: 500,
     color: '#000',
     size: 5,
-    fillColor: false,
+    fillColor: '',
     canvasClassName: 'canvas',
-    debounceTime: 1000
+    debounceTime: 1000,
+    animate: true,
+    tool: TOOL_PENCIL,
+    toolsMap
   };
 
   constructor(props) {
@@ -51,12 +60,18 @@ export default class SketchPad extends Component {
     this.initTool(this.props.tool);
   }
 
-  componentWillReceiveProps({tool}) {
+  componentWillReceiveProps({tool, items}) {
+    items
+      .filter(item => this.props.items.indexOf(item) === -1)
+      .forEach(item => {
+        this.initTool(item.tool);
+        this.tool.draw(item, this.props.animate);
+      });
     this.initTool(tool);
   }
 
   initTool(tool) {
-    this.tool = tool(this.ctx);
+    this.tool = this.props.toolsMap[tool](this.ctx);
   }
 
   onMouseDown(e) {
