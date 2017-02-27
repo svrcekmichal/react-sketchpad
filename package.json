@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/svrcekmichal/react-sketchpad#readme",
   "dependencies": {
-    "react": "^0.14.0 || 15.0.0-0",
-    "react-dom": "^0.14.0 || 15.0.0-0",
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0",
     "uuid": "^2.0.0"
   },
   "devDependencies": {
