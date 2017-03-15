@@ -55,7 +55,7 @@ export default class SketchPad extends Component {
   }
 
   componentDidMount() {
-    this.canvas = findDOMNode(this);
+    this.canvas = findDOMNode(this.canvasRef);
     this.ctx = this.canvas.getContext('2d');
     this.initTool(this.props.tool);
   }
@@ -114,6 +114,7 @@ export default class SketchPad extends Component {
     const {width, height, canvasClassName} = this.props;
     return (
       <canvas
+        ref={(canvas) => { this.canvasRef = canvas; }}
         className={canvasClassName}
         onMouseDown={this.onMouseDown}
         onMouseMove={this.onMouseMove}

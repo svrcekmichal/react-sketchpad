@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { SketchPad, TOOL_PENCIL, TOOL_LINE, TOOL_RECTANGLE, TOOL_ELLIPSE } from './../src';
 import IO from 'socket.io-client'
 
-const wsClient = IO(`ws://172.16.70.58:12346`);
+const wsClient = IO(`ws://127.0.0.1:12346`);
 
 export default class SketchExample extends Component
 {
