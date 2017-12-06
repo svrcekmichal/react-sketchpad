@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
 | width                 | number    | 500           | width of canvas in pixels |
 | height                | number    | 500           | height of the canvas in pixels |
 | items                 | array     | -             | array of items to draw in canvas |
-| animate               | bool      | true          | few tools, for example pencil, can bew animated when drawed |
+| animate               | bool      | true          | few tools, for example pencil, can be animated when drawn |
 | canvasClassName       | string    | .canvas       | css class of canvas |
 | color                 | string    | #000          | primary drawing color |
 | fillColor             | string    | `""`          | color used for filling items like circle or rectangle, empty string is no filling |
