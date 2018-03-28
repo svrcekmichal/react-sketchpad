@@ -48,9 +48,13 @@ export default class SketchPad extends Component {
   constructor(props) {
     super(props);
     this.initTool = this.initTool.bind(this);
+    this.useTouch = 'ontouchstart' in window;
+    this.onTouchStart = this.onMouseDown.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
+    this.onTouchMove = this.onMouseMove.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onDebouncedMove = this.onDebouncedMove.bind(this);
+    this.onTouchEnd = this.onMouseUp.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
 
@@ -103,11 +107,40 @@ export default class SketchPad extends Component {
   }
 
   getCursorPosition(e) {
-    const {top, left} = this.canvas.getBoundingClientRect();
-    return [
-      e.clientX - left,
-      e.clientY - top
-    ];
+    if (this.useTouch) {
+
+      // touchstart
+      if (!this.clientBounds) {
+
+        // TODO: consider an option to refresh this value on scroll? window resize?
+        this.clientBounds = this.canvas.getBoundingClientRect();
+      }
+      const {top, left} = this.clientBounds;
+      let x, y;
+
+      // touchend
+      if (!e.touches || !e.touches[0]) {
+        let touch = this.lastTouch;
+        this.lastTouch = null;
+        return touch;
+      }
+
+      // touchmove
+      const {clientX, clientY} = e.touches[0];
+      x = clientX - left;
+      y = clientY - top;
+      this.lastTouch = [x, y];
+      return [
+        x,
+        y
+      ];
+    } else {
+      const {top, left} = this.canvas.getBoundingClientRect();
+      return [
+        e.clientX - left,
+        e.clientY - top
+      ];
+    }
   }
 
   render() {
@@ -120,6 +153,9 @@ export default class SketchPad extends Component {
         onMouseMove={this.onMouseMove}
         onMouseOut={this.onMouseUp}
         onMouseUp={this.onMouseUp}
+        onTouchStart={this.onTouchStart}
+        onTouchEnd={this.onTouchEnd}
+        onTouchMove={this.onTouchMove}
         width={width}
         height={height}
       />

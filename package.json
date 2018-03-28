@@ -2,7 +2,7 @@
   "name": "react-sketchpad",
   "version": "0.0.3",
   "description": "Sketch pad created with canvas",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "prepublish": "npm run lint && npm run build",
     "build": "babel ./src -d ./lib --ignore '__tests__'",
